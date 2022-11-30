@@ -1,3 +1,4 @@
+import threading
 from rclpy.node import Node
 from toy_threads.timeline import Timeline
 
@@ -8,6 +9,7 @@ class MultiTimer(Node):
         self.timeline = Timeline(list(threads.keys()))
 
         self.t0 = self.get_clock().now()
+        self.cvs = {}
         for name, (period, duration) in threads.items():
             if override_cb_group is None:
                 cb_group = None
@@ -15,6 +17,8 @@ class MultiTimer(Node):
                 cb_group = override_cb_group.get(name)
             else:
                 cb_group = override_cb_group
+
+            self.cvs[name] = threading.Condition()
 
             self.create_timer(period,
                               lambda name=name, duration=duration:
@@ -25,12 +29,17 @@ class MultiTimer(Node):
         return (self.get_clock().now() - self.t0).nanoseconds / 1e9
 
     def timer_cb(self, name, duration):
-        t = self.get_t()
-        self.timeline.start(name, t)
+        # Mark the beginning
+        self.timeline.start(name, self.get_t())
 
-        stop_t = t + duration
-        while self.get_t() < stop_t:
-            pass
+        # Wait for duration (real) seconds
+        with self.cvs[name]:
+            threading.Timer(duration, self.end_cb, args=(name,)).start()
+            self.cvs[name].wait()
 
-        t = self.get_t()
-        self.timeline.end(name, t)
+        # Mark the end
+        self.timeline.end(name, self.get_t())
+
+    def end_cb(self, name):
+        with self.cvs[name]:
+            self.cvs[name].notify()
