@@ -1,6 +1,7 @@
 import threading
 from rclpy.node import Node
 from toy_threads.timeline import Timeline
+from std_msgs.msg import Empty
 
 
 class MultiTimer(Node):
@@ -9,6 +10,7 @@ class MultiTimer(Node):
         self.timeline = Timeline(list(threads.keys()))
 
         self.t0 = self.get_clock().now()
+        self.empty_publishers = {}
         self.cvs = {}
         for name, (period, duration) in threads.items():
             if override_cb_group is None:
@@ -18,6 +20,7 @@ class MultiTimer(Node):
             else:
                 cb_group = override_cb_group
 
+            self.empty_publishers[name] = self.create_publisher(Empty, '/' + name, 1)
             self.cvs[name] = threading.Condition()
 
             self.create_timer(period,
@@ -39,6 +42,7 @@ class MultiTimer(Node):
 
         # Mark the end
         self.timeline.end(name, self.get_t())
+        self.empty_publishers[name].publish(Empty())
 
     def end_cb(self, name):
         with self.cvs[name]:

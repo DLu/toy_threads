@@ -24,6 +24,9 @@ setup(
             'multithread_with_reentrant = toy_threads.examples:multithread_with_reentrant',
             'multithread_with_mux = toy_threads.examples:multithread_with_mux',
             'single_thread_with_reentrant = toy_threads.examples:single_thread_with_reentrant',
+            'slow_computation = toy_threads.examples:slow_computation',
+            'time_simulator = toy_threads.time_simulator:main',
+            'waiting_time_simulator = toy_threads.time_simulator:waiting_main',
         ]
     },
 )

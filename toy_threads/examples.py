@@ -52,3 +52,15 @@ def single_thread_with_reentrant(args=None):
                        'publisher': (0.1, 0.01)},
                       rclpy.callback_groups.ReentrantCallbackGroup())
     rclpy.spin(node)
+
+
+def slow_computation(args=None):
+    rclpy.init(args=args)
+    node = MultiTimer({'computation': (1.0, 2.5),
+                       'publisher': (0.1, 0.01)},
+                      {'computation': rclpy.callback_groups.MutuallyExclusiveCallbackGroup(),
+                       'publisher': rclpy.callback_groups.MutuallyExclusiveCallbackGroup(),
+                       })
+    executor = rclpy.executors.MultiThreadedExecutor()
+    executor.add_node(node)
+    executor.spin()
