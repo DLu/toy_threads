@@ -2,21 +2,21 @@ import rclpy
 from toy_threads.multitimer import MultiTimer
 
 
-def single_thread():
-    rclpy.init()
+def single_thread(args=None):
+    rclpy.init(args=args)
     node = MultiTimer({'computation': (1.0, 0.25)})
     rclpy.spin(node)
 
 
-def two_competing_tasks():
-    rclpy.init()
+def two_competing_tasks(args=None):
+    rclpy.init(args=args)
     node = MultiTimer({'computation': (1.0, 0.25),
                        'publisher': (0.1, 0.01)})
     rclpy.spin(node)
 
 
-def multithread():
-    rclpy.init()
+def multithread(args=None):
+    rclpy.init(args=args)
     node = MultiTimer({'computation': (1.0, 0.25),
                        'publisher': (0.1, 0.01)})
     executor = rclpy.executors.MultiThreadedExecutor()
@@ -24,8 +24,8 @@ def multithread():
     executor.spin()
 
 
-def multithread_with_reentrant():
-    rclpy.init()
+def multithread_with_reentrant(args=None):
+    rclpy.init(args=args)
     node = MultiTimer({'computation': (1.0, 0.25),
                        'publisher': (0.1, 0.01)},
                       rclpy.callback_groups.ReentrantCallbackGroup())
@@ -34,8 +34,8 @@ def multithread_with_reentrant():
     executor.spin()
 
 
-def multithread_with_mux():
-    rclpy.init()
+def multithread_with_mux(args=None):
+    rclpy.init(args=args)
     node = MultiTimer({'computation': (1.0, 0.25),
                        'publisher': (0.1, 0.01)},
                       {'computation': rclpy.callback_groups.MutuallyExclusiveCallbackGroup(),
@@ -46,8 +46,8 @@ def multithread_with_mux():
     executor.spin()
 
 
-def single_thread_with_reentrant():
-    rclpy.init()
+def single_thread_with_reentrant(args=None):
+    rclpy.init(args=args)
     node = MultiTimer({'computation': (1.0, 0.25),
                        'publisher': (0.1, 0.01)},
                       rclpy.callback_groups.ReentrantCallbackGroup())
