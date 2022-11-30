@@ -3,12 +3,19 @@ from toy_threads.timeline import Timeline
 
 
 class MultiTimer(Node):
-    def __init__(self, threads, cb_group=None):
+    def __init__(self, threads, override_cb_group=None):
         super().__init__('multitimer')
         self.timeline = Timeline(list(threads.keys()))
 
         self.t0 = self.get_clock().now()
         for name, (period, duration) in threads.items():
+            if override_cb_group is None:
+                cb_group = None
+            elif isinstance(override_cb_group, dict):
+                cb_group = override_cb_group.get(name)
+            else:
+                cb_group = override_cb_group
+
             self.create_timer(period,
                               lambda name=name, duration=duration:
                               self.timer_cb(name, duration),

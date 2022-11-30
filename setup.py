@@ -19,10 +19,11 @@ setup(
     entry_points={
         'console_scripts': [
             'single_thread = toy_threads.examples:single_thread',
-            'two_competiting_threads = toy_threads.examples:two_competiting_threads',
+            'two_competing_tasks = toy_threads.examples:two_competing_tasks',
             'multithread = toy_threads.examples:multithread',
-            'two_competiting_threads2 = toy_threads.examples:two_competiting_threads2',
-            'multithread2 = toy_threads.examples:multithread2',
+            'multithread_with_reentrant = toy_threads.examples:multithread_with_reentrant',
+            'multithread_with_mux = toy_threads.examples:multithread_with_mux',
+            'single_thread_with_reentrant = toy_threads.examples:single_thread_with_reentrant',
         ]
     },
 )
