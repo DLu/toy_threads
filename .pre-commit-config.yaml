@@ -16,13 +16,13 @@ repos:
   - id: requirements-txt-fixer
   - id: check-xml
   - id: check-yaml
-  rev: v4.4.0
+  rev: v4.5.0
 - repo: https://github.com/codespell-project/codespell
   hooks:
   - id: codespell
     args:
     - --write-changes
-  rev: v2.2.5
+  rev: v2.2.6
 - repo: https://github.com/hhatto/autopep8
   hooks:
   - id: autopep8
